@@ -30,5 +30,5 @@ def sync_folders(source_folder, destination_folder):
 
 def extract_tar_file(file, output_folder):
     print_header("Extracting the layers of image")
-    with tarfile.open(file, mode="r:") as tf:
+    with tarfile.open(fileobj=file, mode="r:") as tf:
         tf.extractall(path=output_folder)

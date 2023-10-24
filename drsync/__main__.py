@@ -1,7 +1,8 @@
-from tempfile import NamedTemporaryFile, TemporaryDirectory
+import io
+from tempfile import TemporaryDirectory
 import argparse
 
-from drsync.docker import save_docker_image
+from drsync.docker_interface import save_docker_image
 from drsync.sync import extract_tar_file, sync_folders
 
 
@@ -16,12 +17,15 @@ def parse_arguments():
     parser.add_argument("destination_folder", help="Destination folder")
     return parser.parse_args()
 
+
 def main():
     args = parse_arguments()
-    with NamedTemporaryFile() as temp_tar_file, TemporaryDirectory() as temp_extraction_folder:
-        save_docker_image(args.image_name, temp_tar_file.name)
-        extract_tar_file(temp_tar_file.name, temp_extraction_folder)
+    with TemporaryDirectory() as temp_extraction_folder, io.BytesIO() as temp_tar_file:
+        save_docker_image(args.image_name, temp_tar_file)
+        temp_tar_file.seek(0)
+        extract_tar_file(temp_tar_file, temp_extraction_folder)
         sync_folders(temp_extraction_folder, args.destination_folder)
+
 
 if __name__ == "__main__":
     main()
