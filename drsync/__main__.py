@@ -1,4 +1,3 @@
-import sys
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 import argparse
 
@@ -11,7 +10,9 @@ def parse_arguments():
         prog="docker-remote-sync",
         description="Utility to sync updated docker layers between 2 machines",
     )
-    parser.add_argument("image_name", help="Docker image (along with tag) on local machine")
+    parser.add_argument(
+        "image_name", help="Docker image (along with tag) on local machine"
+    )
     parser.add_argument("destination_folder", help="Destination folder")
     return parser.parse_args()
 
