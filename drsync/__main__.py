@@ -11,10 +11,11 @@ def parse_arguments():
         prog="docker-remote-sync",
         description="Utility to sync updated docker layers between 2 machines",
         epilog="""
-Do not delete the cache folder on remote machine to take advantage of incremental file sync
-The tar file on remote which is the snapshot of local docker image with be at location <<destination_folder>>.tar
-This folder can be "loaded" into docker using `docker load -i <<destination_folder>>.tar`
+○ Do not delete the cache folder on remote machine to be able to take advantage of incremental file sync
+○ The tar file on remote which is the snapshot of local docker image with be at location <<destination_folder>>.tar
+○ This tar file can be "loaded" into docker using `docker load -i <<destination_folder>>.tar`
 """,
+        formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "image_name", help="Docker image (along with tag) on local machine"
