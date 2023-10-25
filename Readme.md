@@ -7,7 +7,7 @@ A utility to sync docker images between 2 machines while transferring only the c
 ```
 usage: docker-remote-sync [-h] [--port PORT] image_name remote destination_folder
 
-Utility to sync updated docker layers between 2 machines
+Utility to sync updated docker layers between 2 docker host machines
 
 positional arguments:
   image_name          Docker image (along with tag) on local machine
@@ -18,10 +18,12 @@ options:
   -h, --help          show this help message and exit
   --port PORT         Alternate ssh port on remote
 
-Do not delete the cache folder on remote machine to take advantage of incremental file sync
-The tar file on remote which is the snapshot of local docker image with be at location <<destination_folder>>.tar
-This folder can be "loaded" into docker using `docker load -i <<destination_folder>>.tar`
+○ Do not delete the cache folder on remote machine to be able to take advantage of incremental file sync
+○ The tar file on remote which is the snapshot of local docker image with be at location <<destination_folder>>.tar
+○ This tar file can be "loaded" into docker using `docker load -i <<destination_folder>>.tar`
+○ Example usage: `docker-remote-sync myalpine:latest remotehost /tmp/myalpine_remotefolder`
 ```
+
 Example:
 ```
 docker-remote-sync myalpine:latest remotehost /tmp/myalpine_syncfolder

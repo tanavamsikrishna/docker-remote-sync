@@ -9,7 +9,7 @@ from drsync.sync import build_remote_tar, extract_tar_file, sync_folders
 def parse_arguments():
     parser = argparse.ArgumentParser(
         prog="docker-remote-sync",
-        description="Utility to sync updated docker layers between 2 machines",
+        description="Utility to sync updated docker layers between 2 docker host machines",
         epilog="""
 ○ Do not delete the cache folder on remote machine to be able to take advantage of incremental file sync
 ○ The tar file on remote which is the snapshot of local docker image with be at location <<destination_folder>>.tar
