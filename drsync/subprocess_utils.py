@@ -1,6 +1,6 @@
 import subprocess
-import sys
-from colorama import Fore
+
+from drsync.io_util import print_error
 
 
 def check_subprocess_errors(error_lines) -> list[str] | None:
@@ -8,8 +8,7 @@ def check_subprocess_errors(error_lines) -> list[str] | None:
     if len(error_lines) == 0:
         return None
     error_msg = "\n".join(error_lines)
-    error_msg = f"{Fore.RED}{error_msg}{Fore.RESET}"
-    print(error_msg, file=sys.stderr)
+    print_error(error_msg)
     return error_lines
 
 

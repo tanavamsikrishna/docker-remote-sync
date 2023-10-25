@@ -1,6 +1,6 @@
+import argparse
 import io
 from tempfile import TemporaryDirectory
-import argparse
 
 from drsync.docker_interface import save_docker_image
 from drsync.sync import build_remote_tar, extract_tar_file, sync_folders

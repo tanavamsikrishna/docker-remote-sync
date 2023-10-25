@@ -1,8 +1,9 @@
 import sys
 import tarfile
-from drsync.io_util import print_header
+
 from fabric import Connection
 
+from drsync.io_util import print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
 
