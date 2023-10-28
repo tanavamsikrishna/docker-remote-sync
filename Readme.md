@@ -20,7 +20,6 @@ options:
 ```
 
 - Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
-- The tar file on the remote, which is the snapshot of the local Docker image, will be at location <<remote_cache_folder>>.tar
 
 Example:
 `docker-remote-sync myalpine:latest remotehost "~/myalpine_cache"`
