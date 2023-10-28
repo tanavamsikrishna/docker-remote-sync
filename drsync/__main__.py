@@ -19,8 +19,7 @@ def parse_arguments():
         description="Utility to sync updated docker layers between 2 docker host machines",
         epilog="""
 ○ Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
-○ The tar file on the remote, which is the snapshot of the local Docker image, will be at location <<remote_cache_folder>>.tar
-○ Example usage: `docker-remote-sync myalpine:latest remotehost /tmp/myalpine_remotefolder`
+○ Example usage: `docker-remote-sync myalpine:latest remotehost "~/myalpine_cache"`
 """,
         formatter_class=argparse.RawTextHelpFormatter,
     )

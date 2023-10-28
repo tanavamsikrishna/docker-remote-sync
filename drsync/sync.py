@@ -43,7 +43,7 @@ def extract_tar_file(file, output_folder):
 
 def build_remote_tar(rce: Callable[[str], str], folder: str):
     print_header("Building remote tar file")
-    tar_file_loc = f"{folder}.tar"
+    tar_file_loc = f"{folder}/image.tar"
     print(f"Remote image file is: {tar_file_loc}")
     output = rce(f"cd {folder} && tar cf {tar_file_loc} *")
     print(output)
