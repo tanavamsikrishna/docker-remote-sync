@@ -1,9 +1,16 @@
 import argparse
+import functools
 import io
 from tempfile import TemporaryDirectory
 
 from drsync.docker_interface import save_docker_image
-from drsync.sync import build_remote_tar, extract_tar_file, sync_folders
+from drsync.remote import create_remote_folder, get_remote_conn, run_cmd_on_remote
+from drsync.sync import (
+    build_remote_tar,
+    extract_tar_file,
+    load_image_on_remote,
+    sync_folders,
+)
 
 
 def parse_arguments():
@@ -12,8 +19,7 @@ def parse_arguments():
         description="Utility to sync updated docker layers between 2 docker host machines",
         epilog="""
 ○ Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
-○ The tar file on the remote, which is the snapshot of the local Docker image, will be at location <<destination_folder>>.tar
-○ This tar file can be "loaded" into Docker using `docker load -i <<destination_folder>>.tar`
+○ The tar file on the remote, which is the snapshot of the local Docker image, will be at location <<remote_cache_folder>>.tar
 ○ Example usage: `docker-remote-sync myalpine:latest remotehost /tmp/myalpine_remotefolder`
 """,
         formatter_class=argparse.RawTextHelpFormatter,
@@ -23,20 +29,26 @@ def parse_arguments():
     )
     parser.add_argument("remote", help="Address of remote with")
     parser.add_argument("--port", help="Alternate ssh port on remote", required=False)
-    parser.add_argument("destination_folder", help="Cache folder on destination")
+    parser.add_argument("remote_cache_folder", help="Cache folder on remote")
     return parser.parse_args()
 
 
 def main():
     args = parse_arguments()
     with TemporaryDirectory() as temp_extraction_folder, io.BytesIO() as temp_tar_file:
-        save_docker_image(args.image_name, temp_tar_file)
+        remote = args.remote
+        port = args.port
+        image_name = args.image_name
+        remote_cache_folder = args.remote_cache_folder
+        save_docker_image(image_name, temp_tar_file)
         temp_tar_file.seek(0)
         extract_tar_file(temp_tar_file, temp_extraction_folder)
-        sync_folders(
-            temp_extraction_folder, args.remote, args.port, args.destination_folder
-        )
-        build_remote_tar(args.remote, args.port, args.destination_folder)
+        rce = functools.partial(run_cmd_on_remote, conn=get_remote_conn(remote, port))
+
+        create_remote_folder(remote_cache_folder, rce)
+        sync_folders(temp_extraction_folder, remote, port, remote_cache_folder)
+        remote_image_file = build_remote_tar(rce, remote_cache_folder)
+        load_image_on_remote(rce, remote_image_file, image_name)
 
 
 if __name__ == "__main__":
