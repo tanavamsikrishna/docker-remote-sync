@@ -2,10 +2,11 @@ import sys
 
 import docker
 
-from drsync.io_util import print_error
+from drsync.io_util import print_error, print_header
 
 
 def save_docker_image(image_name, file):
+    print_header("Reading a snapshot of the docker image")
     client = docker.from_env()
     try:
         image = client.images.get(image_name)
