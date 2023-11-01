@@ -1,4 +1,5 @@
 import subprocess
+from typing import Literal
 
 from drsync.io_util import print_error
 
@@ -12,10 +13,12 @@ def check_subprocess_errors(error_lines) -> list[str] | None:
     return error_lines
 
 
-def start_subprocess(*args, text=True) -> subprocess.Popen:
+def start_subprocess(
+    *args, output: Literal["print", "read"] = "read", text=True
+) -> subprocess.Popen:
     return subprocess.Popen(
         args=args,
-        stdout=subprocess.PIPE,
+        stdout=subprocess.PIPE if output == "read" else None,
         stderr=subprocess.PIPE,
         text=text,
     )

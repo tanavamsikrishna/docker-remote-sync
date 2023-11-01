@@ -1,4 +1,5 @@
 from typing import BinaryIO
+
 from drsync.io_util import print_header
 from drsync.subprocess_utils import start_subprocess
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "docker-remote-sync"
-version = "0.3.0"
+version = "0.3.2"
 description = ""
 authors = ["Vamsi Talupula <tanavamsikrishna@outlook.com>"]
 readme = "Readme.md"
