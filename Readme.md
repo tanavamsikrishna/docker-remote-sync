@@ -1,4 +1,4 @@
-A utility to sync docker images between 2 machines while transferring only the changed layers
+A utility to sync docker images between two machines while transferring only the changed layers
 
 # Setup
 ### Requirements
@@ -12,7 +12,7 @@ Apart from `docker`, `rsync` is needed on both the machines.
 ```
 usage: docker-remote-sync [-h] [--port PORT] image_name remote remote_cache_folder
 
-Utility to sync updated docker layers between 2 docker host machines
+Utility to sync updated docker layers between two docker host machines
 
 positional arguments:
   image_name           Docker image (along with tag) on local machine
