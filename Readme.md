@@ -1,7 +1,12 @@
 A utility to sync docker images between 2 machines while transferring only the changed layers
 
-# Installation
+# Setup
+### Requirements
+Apart from `docker`, `rsync` is needed on both the machines.
+
+### Installation
 `pipx install docker-remote-sync` or `pip install docker-remote-sync`
+
 
 # Usage
 ```
