@@ -1,21 +1,11 @@
-import sys
-
-import docker
-
-from drsync.io_util import print_error, print_header
+from typing import BinaryIO
+from drsync.io_util import print_header
+from drsync.subprocess_utils import start_subprocess
 
 
-def save_docker_image(image_name, file):
+def save_docker_image(image_name, file: BinaryIO):
     print_header("Reading a snapshot of the docker image")
-    client = docker.from_env()
-    try:
-        image = client.images.get(image_name)
-    except docker.errors.ImageNotFound:
-        print_error(f"Image with identifier `{image_name}` not found")
-        sys.exit(1)
-    except docker.errors.APIError as e:
-        print_error(e)
-        sys.exit(1)
-
-    for chunk in image.save():
-        file.write(chunk)
+    docker_executable = "docker"
+    process = start_subprocess(docker_executable, "save", image_name, text=False)
+    stdout_data, _ = process.communicate()
+    file.write(stdout_data)

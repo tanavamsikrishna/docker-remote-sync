@@ -12,10 +12,10 @@ def check_subprocess_errors(error_lines) -> list[str] | None:
     return error_lines
 
 
-def start_subprocess(*args):
+def start_subprocess(*args, text=True) -> subprocess.Popen:
     return subprocess.Popen(
         args=args,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True,
+        text=text,
     )

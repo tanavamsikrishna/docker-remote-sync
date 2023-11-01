@@ -2,7 +2,7 @@ import sys
 import tarfile
 from typing import Callable
 
-from drsync.io_util import print_header
+from drsync.io_util import print_error, print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
 
@@ -56,9 +56,14 @@ def load_image_on_remote(rce: Callable[[str], str], image_file: str, image_name:
     """
     print_header("Loading docker image on remote")
     output = rce(f"docker load -i {image_file} && rm {image_file}")
-    output_leading_str = "Loaded image ID: sha256:"
-    if not output.startswith(output_leading_str):
-        print_header("Unexpected output from docker load command execution")
+    
+    output_id_leading_str = "Loaded image ID: sha256:"
+    output_tagged_image_leading_str = "Loaded image: "
+    if output.startswith(output_id_leading_str):
+        image_sha256 = output.replace(output_id_leading_str, "").strip()
+        rce(f"docker tag {image_sha256} {image_name}")
+    elif output.startswith(output_tagged_image_leading_str):
+        pass
+    else:
+        print_error(f"Unexpected output from docker load command execution\n{output}")
         sys.exit(1)
-    image_sha256 = output.replace(output_leading_str, "").strip()
-    rce(f"docker tag {image_sha256} {image_name}")
