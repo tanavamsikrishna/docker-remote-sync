@@ -4,6 +4,7 @@ version = "0.3.2"
 description = ""
 authors = ["Vamsi Talupula <tanavamsikrishna@outlook.com>"]
 readme = "Readme.md"
+repository = "https://github.com/tanavamsikrishna/docker-remote-sync"
 packages = [{ include = "drsync" }]
 
 [tool.poetry.dependencies]
