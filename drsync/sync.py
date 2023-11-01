@@ -56,13 +56,14 @@ def load_image_on_remote(rce: Callable[[str], str], image_file: str, image_name:
     """
     print_header("Loading docker image on remote")
     output = rce(f"docker load -i {image_file} && rm {image_file}")
-    
+
     output_id_leading_str = "Loaded image ID: sha256:"
-    output_tagged_image_leading_str = "Loaded image: "
     if output.startswith(output_id_leading_str):
         image_sha256 = output.replace(output_id_leading_str, "").strip()
         rce(f"docker tag {image_sha256} {image_name}")
-    elif output.startswith(output_tagged_image_leading_str):
+    elif output.startswith("Loaded image: ") or (
+        "renaming the old one with ID" in output
+    ):
         pass
     else:
         print_error(f"Unexpected output from docker load command execution\n{output}")
