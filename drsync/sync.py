@@ -2,7 +2,6 @@ import sys
 import tarfile
 from typing import Callable
 
-from drsync.config import timeout
 from drsync.io_util import print_error, print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
@@ -26,7 +25,7 @@ def sync_folders(source_folder: str, remote: str, port: int | None, remote_folde
             f"{remote}:{remote_folder}",
             output="print",
         )
-        process.wait(timeout=timeout)
+        process.wait()
         check_subprocess_errors(process.stderr.readlines())
     except FileNotFoundError as e:
         if e.filename == rsync_executable:
