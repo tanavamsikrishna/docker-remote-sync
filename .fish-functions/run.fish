@@ -11,6 +11,7 @@ function run
                 return 1
             end
             git tag $tag
+            git push
             git push --tags
             gh release create v$tag
     end
