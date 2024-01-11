@@ -4,6 +4,7 @@ function run
             set git_status (git status --porcelain | string trim)
             test -n $git_status; and begin
                 echo "Untracked/uncommited files exist"
+                return 1
             end
             read -f -P "New tag: " tag
             rg $tag pyproject.toml >/dev/null; or begin
