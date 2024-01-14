@@ -19,14 +19,14 @@ def parse_arguments():
         description="Utility to sync updated docker layers between 2 docker host machines",
         epilog="""
 ○ Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
-○ Example usage: `docker-remote-sync myalpine:latest remotehost "~/myalpine_cache"`
+○ Example usage: `docker-remote-sync alpine:latest remotehost "~/my_alpine_cache"`
 """,
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "image_name", help="Docker image (along with tag) on local machine"
     )
-    parser.add_argument("remote", help="Address of remote with")
+    parser.add_argument("remote", help="Address of remote")
     parser.add_argument("--port", help="Alternate ssh port on remote", required=False)
     parser.add_argument("remote_cache_folder", help="Cache folder on remote")
     return parser.parse_args()

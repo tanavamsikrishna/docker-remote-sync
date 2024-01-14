@@ -16,7 +16,7 @@ Utility to sync updated docker layers between two docker host machines
 
 positional arguments:
   image_name           Docker image (along with tag) on local machine
-  remote               Address of remote with
+  remote               Address of remote
   remote_cache_folder  Cache folder on remote
 
 options:
