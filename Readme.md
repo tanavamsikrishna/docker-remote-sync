@@ -10,7 +10,7 @@ Apart from `docker`, `rsync` is needed on both the machines.
 
 # Usage
 ```
-usage: docker-remote-sync [-h] [--port PORT] image_name remote remote_cache_folder
+usage: docker-remote-sync [-h] [--port PORT] [--runtime RUNTIME] image_name remote remote_cache_folder
 
 Utility to sync updated docker layers between two docker host machines
 
@@ -22,6 +22,10 @@ positional arguments:
 options:
   -h, --help           show this help message and exit
   --port PORT          Alternate ssh port on remote
+  --runtime RUNTIME    Container runtime on local machine (defaults to `docker`). Alternatives: podman etc. Should be docker cli compatible.
+
+○ Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
+○ Example usage: `docker-remote-sync alpine:latest remotehost "~/my_alpine_cache"
 ```
 
 - Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync

@@ -16,7 +16,7 @@ from drsync.sync import (
 def parse_arguments():
     parser = argparse.ArgumentParser(
         prog="docker-remote-sync",
-        description="Utility to sync updated docker layers between 2 docker host machines",
+        description="Utility to sync updated docker layers between two docker host machines",
         epilog="""
 ○ Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
 ○ Example usage: `docker-remote-sync alpine:latest remotehost "~/my_alpine_cache"`
@@ -29,6 +29,12 @@ def parse_arguments():
     parser.add_argument("remote", help="Address of remote")
     parser.add_argument("--port", help="Alternate ssh port on remote", required=False)
     parser.add_argument("remote_cache_folder", help="Cache folder on remote")
+    parser.add_argument(
+        "--runtime",
+        help="Container runtime on local machine (defaults to `docker`). Alternatives: podman etc. Should be docker cli compatible.",
+        default="docker",
+        required=False,
+    )
     return parser.parse_args()
 
 
@@ -39,7 +45,8 @@ def main():
         port = args.port
         image_name = args.image_name
         remote_cache_folder = args.remote_cache_folder
-        save_docker_image(image_name, temp_tar_file)
+        runtime = args.runtime
+        save_docker_image(runtime, image_name, temp_tar_file)
         temp_tar_file.seek(0)
         extract_tar_file(temp_tar_file, temp_extraction_folder)
         rce = functools.partial(run_cmd_on_remote, conn=get_remote_conn(remote, port))
