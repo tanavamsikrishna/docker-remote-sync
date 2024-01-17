@@ -6,13 +6,13 @@ function run
                 echo "Untracked/uncommited files exist"
                 return 1
             end
-            read -f -P "New tag (a.b.c): " tag
-            sd '^version = ".*"' 'version = "'$tag'"' pyproject.toml
-            git add .
-            git commit -m "Bump up version to"$tag
-            git push
-            git tag $tag
-            git push --tags
+            read -f -P "New tag (a.b.c): " tag; and \\
+            sd '^version = ".*"' 'version = "'$tag'"' pyproject.toml; and \\
+            git add .; and \\
+            git commit -m "Bump up version to"$tag; and \\
+            git push; and \\
+            git tag $tag; and \\
+            git push --tags; and \\
             gh release create v$tag
     end
 end
