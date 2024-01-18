@@ -6,7 +6,7 @@ function run
                 echo "Untracked/uncommited files exist"
                 return 1
             end
-            read -f -P "New tag (a.b.c): " tag
+            read -f -P "New tag (a.b.c): " tag; or return
             sd '^version = ".*"' 'version = "'$tag'"' pyproject.toml
             git add .
             git commit -m "Bump up version to"$tag
