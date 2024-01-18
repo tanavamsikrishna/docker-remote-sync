@@ -1,8 +1,8 @@
 function run
     switch "$argv[1]"
         case release
-            set git_status (git status --porcelain | tr -d '\n' | tr -d ' ')
-            test -n "$git_status"; and begin
+            set git_status (git status --porcelain)
+            set -q git_status[1]; and begin
                 echo "Untracked/uncommited files exist"
                 return 1
             end
