@@ -7,7 +7,7 @@ function run
                 return 1
             end
             read -f -P "New tag (a.b.c): " tag; or return
-            sd '^version = ".*"' 'version = "'$tag'"' pyproject.toml
+            sd '^version = ".*"' 'version = "'$tag'"' pyproject.toml; or return
             git add .
             git commit -m "Bump up version to"$tag
             git push
