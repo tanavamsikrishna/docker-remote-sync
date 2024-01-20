@@ -24,14 +24,14 @@ def parse_arguments():
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
-        "image_name", help="Docker image (along with tag) on local machine"
+        "image_name", help="Docker image on local machine"
     )
     parser.add_argument("remote", help="Address of remote")
     parser.add_argument("--port", help="Alternate ssh port on remote", required=False)
     parser.add_argument("remote_cache_folder", help="Cache folder on remote")
     parser.add_argument(
-        "--runtime",
-        help="Container runtime on local machine (defaults to `docker`). Alternatives: podman etc. Should be docker cli compatible.",
+        "--docker-cmd",
+        help="Alternate docker command. Defaults to `docker`. Eg. `colima x - docker` or `podman`",
         default="docker",
         required=False,
     )
@@ -45,8 +45,8 @@ def main():
         port = args.port
         image_name = args.image_name
         remote_cache_folder = args.remote_cache_folder
-        runtime = args.runtime
-        save_docker_image(runtime, image_name, temp_tar_file)
+        docker_cmd = args.docker_cmd
+        save_docker_image(docker_cmd, image_name, temp_tar_file)
         temp_tar_file.seek(0)
         extract_tar_file(temp_tar_file, temp_extraction_folder)
         rce = functools.partial(run_cmd_on_remote, conn=get_remote_conn(remote, port))
