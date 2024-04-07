@@ -1,18 +1,26 @@
 import re
 import sys
 import tarfile
-from typing import Callable
+from typing import Callable, Optional
 
 from drsync.io_util import print_error, print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
 
-def sync_folders(source_folder: str, remote: str, port: int | None, remote_folder: str):
+def sync_folders(
+    source_folder: str,
+    remote: str,
+    port: int | None,
+    remote_folder: str,
+    additional_ssh_args: Optional[str] = None,
+):
     print_header("Syncing local changes with remote")
     rsync_executable = "rsync"
     ssh_cmd_with_port = ()
     if port is not None:
-        ssh_cmd_with_port = ("-e", f"'ssh -p {port}'")
+        additional_ssh_args = f"{additional_ssh_args} -p {port}"
+    if additional_ssh_args is not None:
+        ssh_cmd_with_port = ("-e", f"'ssh {additional_ssh_args}'")
     try:
         process = start_subprocess(
             rsync_executable,
