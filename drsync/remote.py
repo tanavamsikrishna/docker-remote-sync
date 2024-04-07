@@ -19,5 +19,5 @@ def run_cmd_on_remote(cmd: str, conn: Connection):
         sys.exit(1)
 
 
-def create_remote_folder(folder: str, rce: Callable[[str], None]):
+def create_remote_folder(folder: str, rce: Callable[[str], str]):
     return rce(f"mkdir -p {folder}")
