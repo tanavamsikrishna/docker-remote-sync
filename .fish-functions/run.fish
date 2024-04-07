@@ -9,7 +9,7 @@ function run
             read -f -P "New tag (a.b.c): " tag; or return
             sd '^version = ".*"' 'version = "'$tag'"' pyproject.toml; or return
             git add .
-            git commit -m "Bump up version to"$tag
+            git commit -m "Bump up version to "$tag
             git push
             git tag $tag
             git push --tags

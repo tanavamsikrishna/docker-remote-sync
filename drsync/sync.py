@@ -20,7 +20,8 @@ def sync_folders(
     if port is not None:
         additional_ssh_args = f"{additional_ssh_args} -p {port}"
     if additional_ssh_args is not None:
-        ssh_cmd_with_port = ("-e", f"'ssh {additional_ssh_args}'")
+        ssh_cmd_with_port = ("-e", f"ssh {additional_ssh_args}")
+        print(ssh_cmd_with_port)
     try:
         process = start_subprocess(
             rsync_executable,
@@ -35,7 +36,10 @@ def sync_folders(
             output="print",
         )
         process.wait()
-        check_subprocess_errors(process.stderr.readlines())
+        if process.stderr is not None:
+            check_subprocess_errors(process.stderr.readlines())
+        if process.returncode != 0:
+            sys.exit(process.returncode)
     except FileNotFoundError as e:
         if e.filename == rsync_executable:
             print(f"Could not find {rsync_executable} executable", file=sys.stderr)
