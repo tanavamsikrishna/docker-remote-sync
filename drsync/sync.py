@@ -21,7 +21,6 @@ def sync_folders(
         additional_ssh_args = f"{additional_ssh_args} -p {port}"
     if additional_ssh_args is not None:
         ssh_cmd_with_port = ("-e", f"ssh {additional_ssh_args}")
-        print(ssh_cmd_with_port)
     try:
         process = start_subprocess(
             rsync_executable,
