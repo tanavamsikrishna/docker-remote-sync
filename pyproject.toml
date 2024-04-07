@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "docker-remote-sync"
 version = "0.6"
-description = "Utility to sync updated docker layers between 2 docker host machines"
+description = "Utility to sync docker image between 2 docker host machines"
 authors = ["Vamsi Talupula <tanavamsikrishna@outlook.com>"]
 readme = "Readme.md"
 repository = "https://github.com/tanavamsikrishna/docker-remote-sync"
