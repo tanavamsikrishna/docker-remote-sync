@@ -8,7 +8,7 @@ repository = "https://github.com/tanavamsikrishna/docker-remote-sync"
 packages = [{ include = "drsync" }]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.12"
 colorama = "*"
 fabric = "*"
 
