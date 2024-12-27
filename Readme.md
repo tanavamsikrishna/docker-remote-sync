@@ -26,9 +26,4 @@ options:
                         Alternate docker command. Defaults to `docker`. Eg. `colima x - docker` or `podman`
 
 ○ Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
-○ Example usage: `docker-remote-sync alpine:latest remotehost "~/my_alpine_cache"````
-
-- Do not delete the cache folder on the remote machine to be able to take advantage of incremental file sync
-
-Example:
-`docker-remote-sync myalpine:latest remotehost "~/myalpine_cache"`
+○ Example usage: `docker-remote-sync alpine:latest remotehost "~/my_alpine_cache"`
