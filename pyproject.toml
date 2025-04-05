@@ -1,22 +1,30 @@
-[tool.poetry]
+[project]
 name = "docker-remote-sync"
 version = "0.6.1"
 description = "Utility to sync docker image between 2 docker host machines"
-authors = ["Vamsi Talupula <tanavamsikrishna@outlook.com>"]
+authors = [{ name = "Vamsi Talupula", email = "tanavamsikrishna@outlook.com" }]
+requires-python = "~=3.12"
 readme = "Readme.md"
-repository = "https://github.com/tanavamsikrishna/docker-remote-sync"
-packages = [{ include = "drsync" }]
+dependencies = [
+    "colorama",
+    "fabric",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-colorama = "*"
-fabric = "*"
+[project.urls]
+Repository = "https://github.com/tanavamsikrishna/docker-remote-sync"
 
-[tool.poetry.group.dev.dependencies]
+[project.scripts]
+docker-remote-sync = "drsync.__main__:main"
+
+[dependency-groups]
+dev = []
+
+[tool.hatch.build.targets.sdist]
+include = ["drsync"]
+
+[tool.hatch.build.targets.wheel]
+include = ["drsync"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-docker-remote-sync = "drsync.__main__:main"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
