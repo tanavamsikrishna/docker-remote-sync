@@ -16,11 +16,15 @@ def sync_folders(
 ):
     print_header("Syncing local changes with remote")
     rsync_executable = "rsync"
-    ssh_cmd_with_port = ()
+    ssh_args = []
+    if additional_ssh_args:
+        ssh_args.append(additional_ssh_args)
     if port is not None:
-        additional_ssh_args = f"{additional_ssh_args} -p {port}"
-    if additional_ssh_args is not None:
-        ssh_cmd_with_port = ("-e", f"ssh {additional_ssh_args}")
+        ssh_args.append(f"-p {port}")
+
+    rsync_ssh_args = ()
+    if ssh_args:
+        rsync_ssh_args = ("-e", f"ssh {' '.join(ssh_args)}")
     try:
         process = start_subprocess(
             rsync_executable,
@@ -29,7 +33,7 @@ def sync_folders(
             "--ignore-times",
             "--recursive",
             "--verbose",
-            *ssh_cmd_with_port,
+            *rsync_ssh_args,
             f"{source_folder}/",
             f"{remote}:{remote_folder}",
             output="print",
