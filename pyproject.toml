@@ -1,6 +1,6 @@
 [project]
 name = "docker-remote-sync"
-version = "0.6.1"
+version = "0.7.0"
 description = "Utility to sync docker image between 2 docker host machines"
 authors = [{ name = "Vamsi Talupula", email = "tanavamsikrishna@outlook.com" }]
 requires-python = "~=3.12"
