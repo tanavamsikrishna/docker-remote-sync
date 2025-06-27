@@ -5,7 +5,7 @@ A utility to sync docker images between two machines while transferring only the
 Apart from `docker`, `rsync` is needed on both the machines.
 
 ### Installation
-`pipx install docker-remote-sync` or `pip install docker-remote-sync`
+`pipx install docker-remote-sync` or `pip install docker-remote-sync` or `uv tool install docker-remote-sync`
 
 
 # Usage
