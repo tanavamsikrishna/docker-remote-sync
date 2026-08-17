@@ -1,7 +1,7 @@
 import re
 import sys
 import tarfile
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from drsync.io_util import print_error, print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
@@ -12,7 +12,7 @@ def sync_folders(
     remote: str,
     port: int | None,
     remote_folder: str,
-    additional_ssh_args: Optional[str] = None,
+    additional_ssh_args: str | None = None,
 ):
     print_header("Syncing local changes with remote")
     rsync_executable = "rsync"
@@ -37,8 +37,9 @@ def sync_folders(
             f"{source_folder}/",
             f"{remote}:{remote_folder}",
             output="print",
+            text=True,
         )
-        process.wait()
+        _ = process.wait()
         if process.stderr is not None:
             check_subprocess_errors(process.stderr.readlines())
         if process.returncode != 0:
@@ -48,7 +49,7 @@ def sync_folders(
             print(f"Could not find {rsync_executable} executable", file=sys.stderr)
             sys.exit(1)
         else:
-            raise e
+            raise
 
 
 def extract_tar_file(file, output_folder):

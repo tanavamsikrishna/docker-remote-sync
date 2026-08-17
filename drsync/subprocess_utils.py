@@ -1,22 +1,22 @@
 import subprocess
 from typing import Literal
 
+from drsync.config import get_process_creator
 from drsync.io_util import print_error
 
 
-def check_subprocess_errors(error_lines) -> list[str] | None:
+def check_subprocess_errors(error_lines: list[str]):
     error_lines = [el for e in error_lines if len(el := e.rstrip()) > 0]
     if len(error_lines) == 0:
-        return None
+        return
     error_msg = "\n".join(error_lines)
     print_error(error_msg)
-    return error_lines
 
 
 def start_subprocess(
-    *args, output: Literal["print", "read"] = "read", text=True
-) -> subprocess.Popen:
-    return subprocess.Popen(
+    *args: str, output: Literal["print", "read"] = "read", text: bool
+) -> subprocess.Popen[str]:
+    return get_process_creator()(
         args=args,
         stdout=subprocess.PIPE if output == "read" else None,
         stderr=subprocess.PIPE,
