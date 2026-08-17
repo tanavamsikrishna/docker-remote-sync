@@ -1,10 +1,14 @@
-from typing import cast
+from typing import Literal, NewType, cast
 
 from drsync.io_interfaces import Service
 
 default_remote_conn_timeout = 10
 default_remote_workspace_folder = "~/.drsync"
 
+RemotePath = NewType('RemotePath', str)
+
+type ContainerServiceName = Literal["apple_containers", "docker", "colima"]
+default_container_service_name: ContainerServiceName = "docker"
 
 _io_service_store = {}
 

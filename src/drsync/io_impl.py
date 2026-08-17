@@ -30,7 +30,3 @@ class FabricRemoteExec(RemoteCmdExecService):
     def run_cmd(self, command: str) -> str:
         output: Result = self.connection.run(command)
         return output.stdout
-
-    @override
-    def mkdir(self, path: str):
-        self.connection.run(f"mkdir -p {path.absolute()}")

@@ -4,6 +4,7 @@ import tarfile
 from collections.abc import Callable
 from pathlib import Path
 
+from drsync.config import RemotePath
 from drsync.io_util import print_error, print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
@@ -17,7 +18,7 @@ def sync_folders(
 ):
     print_header("Syncing local changes with remote")
     rsync_executable = "rsync"
-    ssh_args = []
+    ssh_args: list[str] = []
     if additional_ssh_args:
         ssh_args.append(additional_ssh_args)
     if port is not None:
@@ -66,6 +67,13 @@ def build_remote_tar(rce: Callable[[str], str], folder: str):
     output = rce(f"cd {folder} && tar cf {tar_file_loc} *")
     print(output)
     return tar_file_loc
+
+
+def get_build_remote_tar_cmd(folder: RemotePath) -> str:
+    print_header("Building remote tar file")
+    tar_file_loc = f"{folder}/image.tar"
+    print(f"Remote image file is: {tar_file_loc}")
+    return f"cd {folder} && tar cf {tar_file_loc} *"
 
 
 def load_image_on_remote(rce: Callable[[str], str], image_file: str, image_name: str):

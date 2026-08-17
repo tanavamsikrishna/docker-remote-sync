@@ -19,6 +19,3 @@ class CmdLineArgsService(Service, ABC):
 class RemoteCmdExecService(Service, ABC):
     @abstractmethod
     def run_cmd(self, command: str) -> str: ...
-
-    @abstractmethod
-    def mkdir(self, path: str):...
