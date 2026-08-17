@@ -1,11 +1,11 @@
 import re
 import sys
 import tarfile
-from collections.abc import Callable
 from pathlib import Path
 
-from drsync.config import RemotePath
-from drsync.io_util import print_error, print_header
+from drsync.config import RemotePath, get_io_service
+from drsync.io_interfaces import RemoteCmdExecService
+from drsync.logging_util import print_error, print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
 
@@ -60,36 +60,26 @@ def extract_tar_file(file: Path, output_folder: Path):
         tf.extractall(path=output_folder)
 
 
-def build_remote_tar(rce: Callable[[str], str], folder: str):
+def build_remote_tar(rsync_folder: RemotePath, tar_file: RemotePath):
     print_header("Building remote tar file")
-    tar_file_loc = f"{folder}/image.tar"
-    print(f"Remote image file is: {tar_file_loc}")
-    output = rce(f"cd {folder} && tar cf {tar_file_loc} *")
+    output = get_io_service(RemoteCmdExecService).run_cmd(
+        f"cd {rsync_folder} && tar cf {tar_file} *"
+    )
     print(output)
-    return tar_file_loc
 
 
-def get_build_remote_tar_cmd(folder: RemotePath) -> str:
-    print_header("Building remote tar file")
-    tar_file_loc = f"{folder}/image.tar"
-    print(f"Remote image file is: {tar_file_loc}")
-    return f"cd {folder} && tar cf {tar_file_loc} *"
-
-
-def load_image_on_remote(rce: Callable[[str], str], image_file: str, image_name: str):
-    """
-    rce: Remote command executor
-    """
+def load_image_on_remote(image_file: RemotePath, image_name: str):
     print_header("Loading docker image on remote")
-    output = rce(f"docker load -i {image_file} && rm {image_file}")
+    remote = get_io_service(RemoteCmdExecService)
+    output = remote.run_cmd(f"docker load -i {image_file} && rm {image_file}")
 
     output_id_leading_str = "Loaded image ID: sha256:"
     if output.startswith(output_id_leading_str):
         image_sha256 = output.replace(output_id_leading_str, "").strip()
-        output = rce(f"docker tag {image_sha256} {image_name}")
+        output = remote.run_cmd(f"docker tag {image_sha256} {image_name}")
         print(output)
     elif len(matches := re.findall(".*Loaded image: (.*)", output)) > 0:
-        output = rce(f"docker tag {matches[0]} {image_name}")
+        output = remote.run_cmd(f"docker tag {matches[0]} {image_name}")
         print(output)
     else:
         print_error(f"Unexpected output from docker load command execution\n{output}")

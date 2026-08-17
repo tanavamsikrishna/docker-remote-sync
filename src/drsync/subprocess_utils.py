@@ -1,7 +1,7 @@
 import subprocess
 from typing import Literal
 
-from drsync.io_util import print_error
+from drsync.logging_util import print_error
 
 
 def check_subprocess_errors(error_lines: list[str]):
