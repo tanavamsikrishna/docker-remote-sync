@@ -2,13 +2,14 @@ import re
 import sys
 import tarfile
 from collections.abc import Callable
+from pathlib import Path
 
 from drsync.io_util import print_error, print_header
 from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
 
 def sync_folders(
-    source_folder: str,
+    source_folder: Path,
     remote: str,
     port: int | None,
     remote_folder: str,
@@ -52,9 +53,9 @@ def sync_folders(
             raise
 
 
-def extract_tar_file(file, output_folder):
+def extract_tar_file(file: Path, output_folder: Path):
     print_header("Extracting the layers of image")
-    with tarfile.open(fileobj=file, mode="r:") as tf:
+    with tarfile.open(name=file, mode="r:") as tf:
         tf.extractall(path=output_folder)
 
 

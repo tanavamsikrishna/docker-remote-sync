@@ -4,11 +4,11 @@ from collections.abc import Callable
 import invoke
 from fabric import Connection, Result
 
-from drsync.config import timeout
+from drsync.config import default_remote_conn_timeout
 
 
 def get_remote_conn(host: str, port: int | None):
-    return Connection(host=host, port=port, connect_timeout=timeout)
+    return Connection(host=host, port=port, connect_timeout=default_remote_conn_timeout)
 
 
 def run_cmd_on_remote(cmd: str, conn: Connection):

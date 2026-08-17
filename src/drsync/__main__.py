@@ -1,16 +1,18 @@
 import argparse
 import functools
-import io
-from tempfile import TemporaryDirectory
+from pathlib import Path
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 from drsync.config import (
     default_docker_command,
     default_remote_workspace_folder,
     default_ssh_port,
-    get_sys_argv,
+    get_io_service,
+    set_io_service,
 )
-from drsync.docker_interface import save_docker_image
-from drsync.remote import create_remote_folder, get_remote_conn, run_cmd_on_remote
+from drsync.io_impl import AppleContainers, SysModuleArgv
+from drsync.io_interfaces import CmdLineArgsService, ContainerService, RemoteCmdExecService
+from drsync.remote import get_remote_conn, run_cmd_on_remote
 from drsync.sync import (
     build_remote_tar,
     extract_tar_file,
@@ -59,33 +61,30 @@ def parse_arguments() -> CmdLineArgs:
         default="",
         help="Additional ssh arguments enclosed in quotes",
     )
-    return parser.parse_args(get_sys_argv(), namespace=CmdLineArgs())
+    return parser.parse_args(get_io_service(CmdLineArgsService).get_argv(), namespace=CmdLineArgs())
 
 
 def main():
+    set_io_service(CmdLineArgsService, SysModuleArgv())
     args = parse_arguments()
-    with TemporaryDirectory() as temp_extraction_folder, io.BytesIO() as temp_tar_file:
-        remote = args.remote
-        port = args.port
-        image_name = args.image_name
-        docker_cmd = args.docker_cmd
-        additional_ssh_args = args.additional_ssh_args
-
-        save_docker_image(docker_cmd, image_name, temp_tar_file)
+    set_io_service(ContainerService, AppleContainers())
+    with TemporaryDirectory() as temp_extraction_folder, NamedTemporaryFile("+bw") as temp_tar_file:
+        temp_tar_file_path = Path(temp_tar_file.name)
+        temp_extraction_folder_path  = Path(temp_extraction_folder)
+        get_io_service(ContainerService).save_docker_image(args.image_name, temp_tar_file_path)
         _ = temp_tar_file.seek(0)
-        extract_tar_file(temp_tar_file, temp_extraction_folder)
-        rce = functools.partial(run_cmd_on_remote, conn=get_remote_conn(remote, port))
-
-        _ = create_remote_folder(args.remote_workspace_folder, rce)
+        extract_tar_file(temp_extraction_folder_path, temp_extraction_folder_path)
+        get_io_service(RemoteCmdExecService).mkdir(f"{args.remote_workspace_folder}/{args.image_name}")
         sync_folders(
-            temp_extraction_folder,
-            remote,
-            port,
+            temp_extraction_folder_path,
+            args.remote,
+            args.port,
             args.remote_workspace_folder,
-            additional_ssh_args,
+            args.additional_ssh_args,
         )
+        rce = functools.partial(run_cmd_on_remote, conn=get_remote_conn(args.remote, args.port))
         remote_image_file = build_remote_tar(rce, args.remote_workspace_folder)
-        load_image_on_remote(rce, remote_image_file, image_name)
+        load_image_on_remote(rce, remote_image_file, args.image_name)
 
 
 if __name__ == "__main__":
