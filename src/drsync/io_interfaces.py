@@ -19,3 +19,8 @@ class CmdLineArgsService(Service, ABC):
 class RemoteCmdExecService(Service, ABC):
     @abstractmethod
     def run_cmd(self, command: str) -> str: ...
+
+
+class LocalProcessExecService(Service, ABC):
+    @abstractmethod
+    def run_cmd(self, command: list[str]) -> None: ...

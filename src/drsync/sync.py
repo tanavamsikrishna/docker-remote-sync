@@ -2,11 +2,11 @@ import re
 import sys
 import tarfile
 from pathlib import Path
+from typing import cast
 
 from drsync.config import RemotePath, get_io_service
-from drsync.io_interfaces import RemoteCmdExecService
+from drsync.io_interfaces import LocalProcessExecService, RemoteCmdExecService
 from drsync.logging_util import print_error, print_header
-from drsync.subprocess_utils import check_subprocess_errors, start_subprocess
 
 
 def sync_folders(
@@ -24,30 +24,26 @@ def sync_folders(
     if port is not None:
         ssh_args.append(f"-p {port}")
 
-    rsync_ssh_args = ()
+    rsync_ssh_args: tuple[str, ...]
     if ssh_args:
         rsync_ssh_args = ("-e", f"ssh {' '.join(ssh_args)}")
+    else:
+        rsync_ssh_args = ()
+    rsync_command = [
+        rsync_executable,
+        "--delete",
+        "--archive",
+        "--ignore-times",
+        "--recursive",
+        "--verbose",
+        *rsync_ssh_args,
+        f"{source_folder}/",
+        f"{remote}:{remote_folder}",
+    ]
     try:
-        process = start_subprocess(
-            rsync_executable,
-            "--delete",
-            "--archive",
-            "--ignore-times",
-            "--recursive",
-            "--verbose",
-            *rsync_ssh_args,
-            f"{source_folder}/",
-            f"{remote}:{remote_folder}",
-            output="print",
-            text=True,
-        )
-        _ = process.wait()
-        if process.stderr is not None:
-            check_subprocess_errors(process.stderr.readlines())
-        if process.returncode != 0:
-            sys.exit(process.returncode)
+        get_io_service(LocalProcessExecService).run_cmd(rsync_command)
     except FileNotFoundError as e:
-        if e.filename == rsync_executable:
+        if cast(str, e.filename) == rsync_executable:
             print(f"Could not find {rsync_executable} executable", file=sys.stderr)
             sys.exit(1)
         else:

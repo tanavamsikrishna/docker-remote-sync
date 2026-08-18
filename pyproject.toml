@@ -23,6 +23,13 @@ dev = []
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.basedpyright]
+reportUnknownVariableType = "none"
+reportUnknownParameterType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownMemberType = "none"
+reportMissingTypeStubs = "none"
+
 [tool.hatch.build.targets.sdist]
 include = ["drsync"]
 

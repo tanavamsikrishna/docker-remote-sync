@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryDirectory
-from typing import get_args
+from typing import get_args as get_type_args
 
 from drsync.config import (
     ContainerServiceName,
@@ -32,7 +32,7 @@ class CmdLineArgs:
 
 
 def parse_arguments() -> CmdLineArgs:
-    all_container_service_names = ",".join(get_args(ContainerServiceName))
+    all_container_service_names = str(",".join(get_type_args(ContainerServiceName)))
     parser = argparse.ArgumentParser(
         prog="docker-remote-sync",
         description="Utility to sync updated docker layers between two docker host machines",
